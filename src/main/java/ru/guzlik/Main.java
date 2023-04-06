@@ -25,21 +25,5 @@ public class Main {
                 System.out.println("Field: " + field.getName() + ", Column name: " + columnName);
             }
         }
-
-
-        //        try{
-//            Class.forName("org.postgresql.Driver");
-//        } catch (ClassNotFoundException ex){
-//            System.out.println(ex.getMessage());
-//        }
-//
-//        try (Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-//             Statement statement = connection.createStatement()) {
-//            statement.execute("delete from users where id = 2;");
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
     }
 }

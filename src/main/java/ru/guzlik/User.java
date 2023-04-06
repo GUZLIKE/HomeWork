@@ -1,26 +1,29 @@
 package ru.guzlik;
 
 
-@Table(name = "user")
+@Table(name = "users")
 public class User {
-    @Column(name = "id")
-    private Long id;
+
+    private static Integer nextId = 0;
+    @Column(name = "id",
+            type = "SERIAL")
+    private Integer id;
     @Column(name = "name")
     private String name;
     @Column(name = "password")
     private String passwod;
 
-    public User(Long id, String name, String passwod) {
-        this.id = id;
+    public User(String name, String passwod) {
+        this.id = ++nextId;
         this.name = name;
         this.passwod = passwod;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

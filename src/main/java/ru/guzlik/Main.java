@@ -2,6 +2,9 @@ package ru.guzlik;
 
 import java.lang.reflect.Field;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Main {
@@ -10,36 +13,51 @@ public class Main {
     static final String PASSWORD = "123";
 
 
+
+
     public static void main(String[] args) {
 
-        Class<User> clazz = User.class;
-        Table table = clazz.getAnnotation(Table.class);
-        String tableName = table.name();
-        System.out.println("Table name:" + tableName);
-
-        Field[] fields = clazz.getDeclaredFields();
+        Class<User> userClass = User.class;
+        Table tableAnnotation = userClass.getAnnotation(Table.class);
+        String tableName = tableAnnotation.name();
+        Field[] fields = userClass.getDeclaredFields();
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE TABLE ").append(tableName).append(" (");
         for (Field field : fields) {
-            if (field.isAnnotationPresent(Column.class)){
-                Column column = field.getAnnotation(Column.class);
-                String columnName = column.name();
-                System.out.println("Field: " + field.getName() + ", Column name: " + columnName);
+            Column columnAnnotation = field.getAnnotation(Column.class);
+            if (columnAnnotation != null) {
+                String columnName = columnAnnotation.name();
+                sb.append(columnName).append(" ");
+                String columnType = columnAnnotation.type();
+                sb.append(columnType).append(" ");
+                // add column constraints here
+                sb.append(", ");
             }
         }
+        sb.setLength(sb.length() - 2); // remove trailing comma and space
+        sb.append(")");
+        String createTableSQL = sb.toString();
+        System.out.println(createTableSQL);
 
 
-        //        try{
-//            Class.forName("org.postgresql.Driver");
-//        } catch (ClassNotFoundException ex){
-//            System.out.println(ex.getMessage());
-//        }
-//
-//        try (Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-//             Statement statement = connection.createStatement()) {
-//            statement.execute("delete from users where id = 2;");
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
+
+
+
+
+
+
+        try{
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException ex){
+            System.out.println(ex.getMessage());
+        }
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+             Statement statement = connection.createStatement()) {
+            statement.execute(createTableSQL);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

@@ -34,21 +34,30 @@ public class Main {
                 sb.append(", ");
             }
         }
+        sb.setLength(sb.length() - 2); // remove trailing comma and space
+        sb.append(")");
+
+        StringBuilder dsb = new StringBuilder();
+        dsb.append("DROP TABLE").append(" ").append(tableName).append(";");
+
+        String createTableSQL = sb.toString();
+        String dropTable = dsb.toString();
+
+        System.out.println(dropTable);
 
 
-        //        try{
-//            Class.forName("org.postgresql.Driver");
-//        } catch (ClassNotFoundException ex){
-//            System.out.println(ex.getMessage());
-//        }
-//
-//        try (Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-//             Statement statement = connection.createStatement()) {
-//            statement.execute("delete from users where id = 2;");
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
+                try{
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException ex){
+            System.out.println(ex.getMessage());
+        }
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+             Statement statement = connection.createStatement()) {
+            statement.execute(createTableSQL);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

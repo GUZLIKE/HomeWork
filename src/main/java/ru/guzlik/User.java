@@ -1,23 +1,32 @@
 package ru.guzlik;
 
 
+import ru.guzlik.Annotation.Column;
+import ru.guzlik.Annotation.Id;
+import ru.guzlik.Annotation.Table;
+import ru.guzlik.DataTools.DataType;
+
 @Table(name = "users")
 public class User {
 
-    private static Integer nextId = 0;
+    @Id
     @Column(name = "id",
-            type = "SERIAL")
+            type = DataType.SERIAL)
     private Integer id;
     @Column(name = "name")
     private String name;
     @Column(name = "password")
     private String passwod;
 
-    public User(String name, String passwod) {
-        this.id = ++nextId;
+
+    public User(Integer id, String name, String passwod) {
+        this.id = id;
         this.name = name;
         this.passwod = passwod;
     }
+
+    public User() {}
+
 
     public Integer getId() {
         return id;

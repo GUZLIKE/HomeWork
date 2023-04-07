@@ -1,11 +1,8 @@
 package ru.guzlik;
 
-import java.lang.reflect.Field;
+import ru.guzlik.DataTools.SelectData;
+
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class Main {
     static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
@@ -15,35 +12,17 @@ public class Main {
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalAccessException {
+        User user = new User(2,"GEG","123");
+        Class<? extends User> userClas = user.getClass();
+        SelectData selectData = new SelectData(userClas);
 
-        Class<User> userClass = User.class;
-        Table tableAnnotation = userClass.getAnnotation(Table.class);
-        String tableName = tableAnnotation.name();
-        Field[] fields = userClass.getDeclaredFields();
-        StringBuilder sb = new StringBuilder();
-        sb.append("CREATE TABLE ").append(tableName).append(" (");
-        for (Field field : fields) {
-            Column columnAnnotation = field.getAnnotation(Column.class);
-            if (columnAnnotation != null) {
-                String columnName = columnAnnotation.name();
-                sb.append(columnName).append(" ");
-                String columnType = columnAnnotation.type();
-                sb.append(columnType).append(" ");
-                // add column constraints here
-                sb.append(", ");
-            }
-        }
-        sb.setLength(sb.length() - 2); // remove trailing comma and space
-        sb.append(")");
-
-        StringBuilder dsb = new StringBuilder();
-        dsb.append("DROP TABLE").append(" ").append(tableName).append(";");
-
-        String createTableSQL = sb.toString();
-        String dropTable = dsb.toString();
-
-        System.out.println(dropTable);
+        System.out.println(selectData.createTable());
+        System.out.println(selectData.selectTable());
+        System.out.println(selectData.deleteTable());
+        System.out.println(selectData.insertInto(user));
+        System.out.println(selectData.deleteFrom(user));
+        System.out.println(selectData.updateColumn(user,1));
 
 
                 try{
@@ -54,7 +33,14 @@ public class Main {
 
         try (Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
              Statement statement = connection.createStatement()) {
-            statement.execute(createTableSQL);
+            statement.execute(selectData.updateColumn(user,1));
+
+                ResultSet rs = statement.executeQuery(selectData.selectTable());
+                while (rs.next()){
+                    System.out.println(rs.getInt(1));
+                    System.out.println(rs.getString(2));
+                    System.out.println(rs.getString(3));
+                }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
